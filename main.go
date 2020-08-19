@@ -22,7 +22,7 @@ func main() {
 	slackClient = slack.New(
 		slackAccessToken,
 		slack.OptionDebug(true),
-		slack.OptionLog(log.New(os.Stdout, "slack bot:", log.Lshortfile|log.LstdFlags)),
+		// slack.OptionLog(log.New(os.Stdout, "slack bot:", log.Lshortfile|log.LstdFlags)),
 	)
 
 	rtm := slackClient.NewRTM()
@@ -38,17 +38,6 @@ func main() {
 
 func handleMsgFromSlack(event *slack.MessageEvent) {
 	user, err := slackClient.GetUserInfo(event.User)
-	// attachment := slack.Attachment{
-	// 	Pretext: "Hello @" + user.Name + "",
-	// 	Text:    "I am happy to see you here!",
-
-	// 	Fields: []slack.AttachmentField{
-	// 		slack.AttachmentField{
-	// 			Title: "Title of the attachment",
-	// 			Value: "This is the body",
-	// 		},
-	// 	},
-	// }
 
 	// channelID, timestamp, err := slackClient.PostEphemeralMessage(
 	// 	event.User,
@@ -56,7 +45,11 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 	// 	slack.MsgOptionAttachments(attachment),
 	// )
 
-	msg, cool := slackClient.PostEphemeral(event.Channel, user.ID, slack.MsgOptionText("hey", false))
+	msg, cool := slackClient.PostEphemeral(
+		event.Channel,
+		user.ID,
+		slack.MsgOptionText("hey", false),
+	)
 
 	if err != nil {
 		fmt.Printf("Ooops! There is an error: %s\n", err)
