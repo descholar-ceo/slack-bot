@@ -21,8 +21,8 @@ func main() {
 
 	slackClient = slack.New(
 		slackAccessToken,
-		// slack.OptionDebug(true),
-		// slack.OptionLog(log.New(os.Stdout, "slack bot:", log.Lshortfile|log.LstdFlags)),
+		slack.OptionDebug(true),
+		slack.OptionLog(log.New(os.Stdout, "slack bot:", log.Lshortfile|log.LstdFlags)),
 	)
 
 	rtm := slackClient.NewRTM()
@@ -37,20 +37,19 @@ func main() {
 }
 
 func handleMsgFromSlack(event *slack.MessageEvent) {
+	user, err := slackClient.GetUserInfo(event.User)
 	attachment := slack.Attachment{
-		Pretext: "Hello descholar",
+		Pretext: "Hello @" + user.Name + "",
 		Text:    "I am happy to see you here!",
-		// Uncomment the following part to send a field too
 
 		Fields: []slack.AttachmentField{
 			slack.AttachmentField{
-				Title: "a",
-				Value: "no",
+				Title: "Title of the attachment",
+				Value: "This is the body",
 			},
 		},
 	}
 
-	// fmt.Printf("This is the event obj %v: \n", event.Username)
 	channelID, timestamp, err := slackClient.PostMessage(
 		event.User,
 		slack.MsgOptionText("Hello there!", true),
