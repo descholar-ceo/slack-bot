@@ -1,2 +1,3 @@
 # slack-bot
-This is a slack-bot developed in golang
+## Tools
+Go v1.15
