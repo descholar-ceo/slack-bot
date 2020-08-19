@@ -53,7 +53,7 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 	// fmt.Printf("This is the event obj %v: \n", event.Username)
 	channelID, timestamp, err := slackClient.PostMessage(
 		event.User,
-		slack.MsgOptionText("Some text", false),
+		slack.MsgOptionText("Hello there!", true),
 		slack.MsgOptionAttachments(attachment),
 	)
 
