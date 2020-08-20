@@ -18,6 +18,7 @@ func main() {
 	}
 
 	slackAccessToken := os.Getenv("SLACK_ACCESS_TOKEN")
+	staticCommandsApi := os.Getenv("STATIC_COMMANDS_API")
 
 	slackClient = slack.New(
 		slackAccessToken,
