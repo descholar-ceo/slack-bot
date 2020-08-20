@@ -19,8 +19,10 @@ var slackClient *slack.Client
 
 func main() {
 	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	if os.Getenv("ENV") != "production" {
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
 	}
 
 	slackAccessToken := os.Getenv("SLACK_ACCESS_TOKEN")
