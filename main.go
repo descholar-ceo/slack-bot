@@ -57,9 +57,13 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 		},
 	}
 
+	myCom := retrieveStaticCommands("links")
+
+	fmt.Println("command res" + myCom)
+
 	channelID, timestamp, err := slackClient.PostMessage(
 		user.ID,
-		slack.MsgOptionText(retrieveStaticCommands("links"), false),
+		slack.MsgOptionText(myCom, false),
 		slack.MsgOptionAttachments(attachment),
 		slack.MsgOptionAsUser(true),
 	)
