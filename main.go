@@ -12,6 +12,9 @@ import (
 	"github.com/slack-go/slack"
 )
 
+// Res is from internet
+type Res map[string]interface{}
+
 var slackClient *slack.Client
 
 func main() {
@@ -21,7 +24,7 @@ func main() {
 	}
 
 	slackAccessToken := os.Getenv("SLACK_ACCESS_TOKEN")
-	staticCommandsApi := os.Getenv("STATIC_COMMANDS_API")
+	// staticCommandsApi := os.Getenv("STATIC_COMMANDS_API")
 
 	slackClient = slack.New(
 		slackAccessToken,
@@ -70,14 +73,18 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 
 func retrieveStaticCommands() map[string]interface{} {
 	var result Res
-	resp, err := http.Get("")
+	resp, err := http.Get(os.Getenv("STATIC_COMMANDS_API"))
 	if err != nil {
 		fmt.Printf("Ooops! Something went wrong %v\n", err)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	json.Unmarshal(body, &result)
 
+	if json.Valid(body) {
+		json.Unmarshal(body, &result)
+	} else {
+		// result["error"]=["there is an error"]
+	}
 	// isValid := json.Valid(body)
 	return result
 }
