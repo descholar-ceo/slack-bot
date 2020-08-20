@@ -88,6 +88,5 @@ func retrieveStaticCommands() map[string]interface{} {
 	} else {
 		// result["error"]=["there is an error"]
 	}
-	// isValid := json.Valid(body)
 	return result
 }
