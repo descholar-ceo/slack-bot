@@ -1,8 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -63,4 +66,18 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 		return
 	}
 	fmt.Printf("Message successfully sent to channel %s at %s", channelID, timestamp)
+}
+
+func retrieveStaticCommands() map[string]interface{} {
+	var result Res
+	resp, err := http.Get("")
+	if err != nil {
+		fmt.Printf("Ooops! Something went wrong %v\n", err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	json.Unmarshal(body, &result)
+
+	// isValid := json.Valid(body)
+	return result
 }
