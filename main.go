@@ -24,12 +24,11 @@ func main() {
 	}
 
 	slackAccessToken := os.Getenv("SLACK_ACCESS_TOKEN")
-	// staticCommandsApi := os.Getenv("STATIC_COMMANDS_API")
 
 	slackClient = slack.New(
 		slackAccessToken,
-		// slack.OptionDebug(true),
-		// slack.OptionLog(log.New(os.Stdout, "slack bot:", log.Lshortfile|log.LstdFlags)),
+		slack.OptionDebug(true),
+		slack.OptionLog(log.New(os.Stdout, "slack bot:", log.Lshortfile|log.LstdFlags)),
 	)
 
 	rtm := slackClient.NewRTM()
@@ -45,17 +44,6 @@ func main() {
 
 func handleMsgFromSlack(event *slack.MessageEvent) {
 	user, err := slackClient.GetUserInfo(event.User)
-	// attachment := slack.Attachment{
-	// 	Pretext: "Hello @" + user.Name + "",
-	// 	Text:    "I am happy to see you here!",
-
-	// 	Fields: []slack.AttachmentField{
-	// 		slack.AttachmentField{
-	// 			Title: "Title of the attachment",
-	// 			Value: "This is the body",
-	// 		},
-	// 	},
-	// }
 
 	myCom := retrieveStaticCommands("welcomeMsg")
 
@@ -64,7 +52,6 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 	channelID, timestamp, err := slackClient.PostMessage(
 		user.ID,
 		slack.MsgOptionText(myCom, false),
-		// slack.MsgOptionAttachments(attachment),
 		slack.MsgOptionAsUser(true),
 	)
 
