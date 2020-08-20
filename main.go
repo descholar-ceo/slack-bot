@@ -39,15 +39,15 @@ func main() {
 func handleMsgFromSlack(event *slack.MessageEvent) {
 	user, err := slackClient.GetUserInfo(event.User)
 
-	timestamp, err := slackClient.PostEphemeral(
-		event.Channel,
+	channelID, timestamp, err := slackClient.PostMessage(
 		user.ID,
 		slack.MsgOptionText("hey", false),
+		slack.MsgOptionAsUser(true),
 	)
 
 	if err != nil {
 		fmt.Printf("Ooops! There is an error: %s\n", err)
 		return
 	}
-	fmt.Printf("Message successfully sent to channel at %s", timestamp)
+	fmt.Printf("Message successfully sent to channel %s at %s", channelID, timestamp)
 }
