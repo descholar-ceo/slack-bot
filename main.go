@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"reflect"
 
 	"github.com/joho/godotenv"
 	"github.com/slack-go/slack"
@@ -46,26 +45,26 @@ func main() {
 
 func handleMsgFromSlack(event *slack.MessageEvent) {
 	user, err := slackClient.GetUserInfo(event.User)
-	attachment := slack.Attachment{
-		Pretext: "Hello @" + user.Name + "",
-		Text:    "I am happy to see you here!",
+	// attachment := slack.Attachment{
+	// 	Pretext: "Hello @" + user.Name + "",
+	// 	Text:    "I am happy to see you here!",
 
-		Fields: []slack.AttachmentField{
-			slack.AttachmentField{
-				Title: "Title of the attachment",
-				Value: "This is the body",
-			},
-		},
-	}
+	// 	Fields: []slack.AttachmentField{
+	// 		slack.AttachmentField{
+	// 			Title: "Title of the attachment",
+	// 			Value: "This is the body",
+	// 		},
+	// 	},
+	// }
 
-	myCom := retrieveStaticCommands("links")
+	myCom := retrieveStaticCommands("welcomeMsg")
 
 	fmt.Println("command res" + myCom)
 
 	channelID, timestamp, err := slackClient.PostMessage(
 		user.ID,
 		slack.MsgOptionText(myCom, false),
-		slack.MsgOptionAttachments(attachment),
+		// slack.MsgOptionAttachments(attachment),
 		slack.MsgOptionAsUser(true),
 	)
 
@@ -94,15 +93,13 @@ func retrieveStaticCommands(command string) string {
 		// result["error"]=["there is an error"]
 	}
 
-	// fmt.Println(result)
-
 	// iterating over the result
 	for k, v := range result {
 		if k == command {
-			fmt.Println("this is value is of type", reflect.TypeOf(v))
-			return v
+			res = v
+		} else {
+			res = "Sorry! I don't understand that command"
 		}
-		res = "Sorry! I don't understand that command"
 	}
 
 	return res
