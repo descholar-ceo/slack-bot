@@ -46,7 +46,7 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 	user, err := slackClient.GetUserInfo(event.User)
 	channelID, timestamp, err := slackClient.PostMessage(
 		user.ID,
-		slack.MsgOptionText(retrieveStaticCommands("welcomeMsg"), false),
+		slack.MsgOptionText(retrieveStaticCommands(event.Text), false),
 		slack.MsgOptionAsUser(true),
 	)
 
