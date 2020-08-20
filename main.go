@@ -75,6 +75,8 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 // function to retrieve static command from api
 func retrieveStaticCommands(command string) map[string]interface{} {
 	var result Res
+	var res string
+
 	resp, err := http.Get(os.Getenv("STATIC_COMMANDS_API"))
 	if err != nil {
 		fmt.Printf("Ooops! Something went wrong %v\n", err)
@@ -87,5 +89,13 @@ func retrieveStaticCommands(command string) map[string]interface{} {
 	} else {
 		// result["error"]=["there is an error"]
 	}
+
+	// iterating over the result
+	for k, v := range result {
+		if k == command {
+
+		}
+	}
+
 	return result
 }
