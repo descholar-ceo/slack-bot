@@ -1,1 +1,1 @@
-bot: main.go
+bot: ./bin/main
