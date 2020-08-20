@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"reflect"
 
 	"github.com/joho/godotenv"
 	"github.com/slack-go/slack"
@@ -93,11 +94,15 @@ func retrieveStaticCommands(command string) string {
 		// result["error"]=["there is an error"]
 	}
 
+	// fmt.Println(result)
+
 	// iterating over the result
 	for k, v := range result {
 		if k == command {
-			res = v
+			fmt.Println("this is value is of type", reflect.TypeOf(v))
+			return v
 		}
+		res = "Sorry! I don't understand that command"
 	}
 
 	return res
