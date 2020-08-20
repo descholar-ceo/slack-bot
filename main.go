@@ -13,7 +13,7 @@ import (
 )
 
 // Res is from internet
-type Res map[string]interface{}
+type Res map[string]string
 
 var slackClient *slack.Client
 
@@ -38,7 +38,7 @@ func main() {
 	for msg := range rtm.IncomingEvents {
 		switch ev := msg.Data.(type) {
 		case *slack.MessageEvent:
-			handleMsgFromSlack(ev)
+			go handleMsgFromSlack(ev)
 		}
 	}
 }
@@ -56,11 +56,10 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 			},
 		},
 	}
-	commandsList := retrieveStaticCommands()
 
 	channelID, timestamp, err := slackClient.PostMessage(
 		user.ID,
-		slack.MsgOptionText("commandsList[links]", false),
+		slack.MsgOptionText(retrieveStaticCommands("links"), false),
 		slack.MsgOptionAttachments(attachment),
 		slack.MsgOptionAsUser(true),
 	)
@@ -73,7 +72,7 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 }
 
 // function to retrieve static command from api
-func retrieveStaticCommands(command string) map[string]interface{} {
+func retrieveStaticCommands(command string) string {
 	var result Res
 	var res string
 
@@ -93,9 +92,9 @@ func retrieveStaticCommands(command string) map[string]interface{} {
 	// iterating over the result
 	for k, v := range result {
 		if k == command {
-
+			res = v
 		}
 	}
 
-	return result
+	return res
 }
