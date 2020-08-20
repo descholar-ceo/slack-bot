@@ -38,16 +38,28 @@ func main() {
 
 func handleMsgFromSlack(event *slack.MessageEvent) {
 	user, err := slackClient.GetUserInfo(event.User)
+	attachment := slack.Attachment{
+		Pretext: "Hello @" + user.Name + "",
+		Text:    "I am happy to see you here!",
 
-	timestamp, err := slackClient.PostEphemeral(
-		event.Channel,
+		Fields: []slack.AttachmentField{
+			slack.AttachmentField{
+				Title: "Title of the attachment",
+				Value: "This is the body",
+			},
+		},
+	}
+
+	channelID, timestamp, err := slackClient.PostMessage(
 		user.ID,
 		slack.MsgOptionText("hey", false),
+		slack.MsgOptionAttachments(attachment),
+		slack.MsgOptionAsUser(true),
 	)
 
 	if err != nil {
 		fmt.Printf("Ooops! There is an error: %s\n", err)
 		return
 	}
-	fmt.Printf("Message successfully sent to channel at %s", timestamp)
+	fmt.Printf("Message successfully sent to channel %s at %s", channelID, timestamp)
 }
