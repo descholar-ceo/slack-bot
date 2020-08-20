@@ -74,6 +74,7 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 	fmt.Printf("Message successfully sent to channel %s at %s", channelID, timestamp)
 }
 
+// function to retrieve static command from api
 func retrieveStaticCommands() map[string]interface{} {
 	var result Res
 	resp, err := http.Get(os.Getenv("STATIC_COMMANDS_API"))
