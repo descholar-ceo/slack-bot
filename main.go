@@ -38,6 +38,17 @@ func main() {
 
 func handleMsgFromSlack(event *slack.MessageEvent) {
 	user, err := slackClient.GetUserInfo(event.User)
+	attachment := slack.Attachment{
+		Pretext: "Hello @" + user.Name + "",
+		Text:    "I am happy to see you here!",
+
+		Fields: []slack.AttachmentField{
+			slack.AttachmentField{
+				Title: "Title of the attachment",
+				Value: "This is the body",
+			},
+		},
+	}
 
 	channelID, timestamp, err := slackClient.PostMessage(
 		user.ID,
