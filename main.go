@@ -58,8 +58,6 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 	}
 	commandsList := retrieveStaticCommands()
 
-	fmt.Println(commandsList)
-
 	channelID, timestamp, err := slackClient.PostMessage(
 		user.ID,
 		slack.MsgOptionText("commandsList[links]", false),
@@ -75,7 +73,7 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 }
 
 // function to retrieve static command from api
-func retrieveStaticCommands() map[string]interface{} {
+func retrieveStaticCommands(command string) map[string]interface{} {
 	var result Res
 	resp, err := http.Get(os.Getenv("STATIC_COMMANDS_API"))
 	if err != nil {
