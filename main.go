@@ -53,6 +53,7 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 	channelID, timestamp, err := slackClient.PostMessage(
 		user.ID,
 		slack.MsgOptionText("hey", false),
+		slack.MsgOptionAttachments(attachment),
 		slack.MsgOptionAsUser(true),
 	)
 
