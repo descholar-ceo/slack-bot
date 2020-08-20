@@ -28,8 +28,8 @@ func main() {
 
 	slackClient = slack.New(
 		slackAccessToken,
-		slack.OptionDebug(true),
-		slack.OptionLog(log.New(os.Stdout, "slack bot:", log.Lshortfile|log.LstdFlags)),
+		// slack.OptionDebug(true),
+		// slack.OptionLog(log.New(os.Stdout, "slack bot:", log.Lshortfile|log.LstdFlags)),
 	)
 
 	rtm := slackClient.NewRTM()
@@ -38,7 +38,7 @@ func main() {
 	for msg := range rtm.IncomingEvents {
 		switch ev := msg.Data.(type) {
 		case *slack.MessageEvent:
-			go handleMsgFromSlack(ev)
+			handleMsgFromSlack(ev)
 		}
 	}
 }
@@ -56,10 +56,13 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 			},
 		},
 	}
+	commandsList := retrieveStaticCommands()
+
+	fmt.Println(commandsList)
 
 	channelID, timestamp, err := slackClient.PostMessage(
 		user.ID,
-		slack.MsgOptionText("hey", false),
+		slack.MsgOptionText("commandsList[links]", false),
 		slack.MsgOptionAttachments(attachment),
 		slack.MsgOptionAsUser(true),
 	)
