@@ -1,13 +1,19 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
 	"github.com/slack-go/slack"
 )
+
+// Res is from internet
+type Res map[string]string
 
 var slackClient *slack.Client
 
@@ -38,22 +44,10 @@ func main() {
 
 func handleMsgFromSlack(event *slack.MessageEvent) {
 	user, err := slackClient.GetUserInfo(event.User)
-	attachment := slack.Attachment{
-		Pretext: "Hello @" + user.Name + "",
-		Text:    "I am happy to see you here!",
-
-		Fields: []slack.AttachmentField{
-			slack.AttachmentField{
-				Title: "Title of the attachment",
-				Value: "This is the body",
-			},
-		},
-	}
-
-	channelID, timestamp, err := slackClient.PostMessage(
+	timestamp, err := slackClient.PostEphemeral(
+		event.Channel,
 		user.ID,
-		slack.MsgOptionText("hey", false),
-		slack.MsgOptionAttachments(attachment),
+		slack.MsgOptionText(retrieveStaticCommands(event.Text), false),
 		slack.MsgOptionAsUser(true),
 	)
 
@@ -61,5 +55,35 @@ func handleMsgFromSlack(event *slack.MessageEvent) {
 		fmt.Printf("Ooops! There is an error: %s\n", err)
 		return
 	}
-	fmt.Printf("Message successfully sent to channel %s at %s", channelID, timestamp)
+	fmt.Printf("Message successfully sent to channel at %s", timestamp)
+}
+
+// function to retrieve static command from api
+func retrieveStaticCommands(command string) string {
+	var result Res
+	var res string
+
+	resp, err := http.Get(os.Getenv("STATIC_COMMANDS_API"))
+	if err != nil {
+		fmt.Printf("Ooops! Something went wrong %v\n", err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+
+	if json.Valid(body) {
+		json.Unmarshal(body, &result)
+	} else {
+		// result["error"]=["there is an error"]
+	}
+
+	// iterating over the result
+	for k, v := range result {
+		if k == command {
+			res = v
+		} else {
+			res = "Sorry! I don't understand that command"
+		}
+	}
+
+	return res
 }
